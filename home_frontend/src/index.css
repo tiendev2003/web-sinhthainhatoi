@@ -1,0 +1,48 @@
+:root {
+  --primary-color: #0e6828;
+  --white: #fff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  font-family: 'Roboto';
+}
+
+a {
+  text-decoration: none;
+  color: unset
+}
+
+
+.carousel {
+  text-align: center;
+}
+
+.CircularProgressbar-path {
+  stroke: red !important;
+}
+
+.CircularProgressbar-trail {
+  stroke: rgba(243, 241, 241, 0.6) !important;
+}
+
+.CircularProgressbar-text {
+  fill: rgb(12, 12, 12) !important;
+}
+
+@media only screen and (max-width: 1025px) {
+  .MuiGrid-root {
+    padding-right: 0 !important;
+  }
+
+  .MuiTabPanel-root {
+    padding-right: 0 !important;
+    padding-left: 16px !important;
+  }
+}
