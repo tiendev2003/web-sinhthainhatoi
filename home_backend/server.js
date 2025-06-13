@@ -13,18 +13,30 @@ const dashboardRoute = require("./router/dashboardRoute");
 const userNotificationRoute = require("./router/userNotificationRoute");
 const adminNotificationRoute = require("./router/adminNotificationRoute");
 const paymentRoute = require("./router/paymentRoute");
+const tableRoute = require("./router/tableRoute");
 const connectDb = require("./services/connectDBService");
 const cors = require("cors");
+// morrgan
+const morgan = require("morgan");
 
 const app = express();
 
 require("dotenv").config();
 
+// middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev")); // log requests to the console
 // connect to DB
 connectDb();
 
 //cors
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000", process.env.BASE_URL, "*"].filter(Boolean),
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+}));
 
 app.use("/upload", express.static("upload"));
 
@@ -41,10 +53,16 @@ app.use("/api/dashboard", dashboardRoute);
 app.use("/api/userNotification", userNotificationRoute);
 app.use("/api/adminNotification", adminNotificationRoute);
 app.use("/api/payment", paymentRoute);
+app.use("/api/table", tableRoute);
 
+// Health check endpoint
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok", message: "Server is running" });
+});
+ 
 const httpServer = require("http").createServer(app);
 const io = socketSetup.init(httpServer);
 
-httpServer.listen(process.env.PORT, () => {
+httpServer.listen(process.env.PORT,'0.0.0.0', () => {
     console.log(`Server đã khởi động trên cổng ${process.env.PORT}`);
 });

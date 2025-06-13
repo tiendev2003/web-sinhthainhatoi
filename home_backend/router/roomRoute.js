@@ -47,6 +47,7 @@ router.get("/list", roomController.getRoomList);
 router.get("/single", roomController.getRoomSingle);
 router.get("/double", roomController.getRoomDouble);
 router.get("/vip", roomController.getRoomVip);
+router.get("/community", roomController.getRoomCommunity);
 
 router.get("/:id", roomController.getRoomDetail);
 router.put(

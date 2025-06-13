@@ -1,5 +1,17 @@
+import BathtubIcon from "@mui/icons-material/Bathtub";
+import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
+import CoffeeIcon from "@mui/icons-material/Coffee";
+import CoffeeOutlinedIcon from "@mui/icons-material/CoffeeOutlined";
+import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
+import DinnerDiningOutlinedIcon from "@mui/icons-material/DinnerDiningOutlined";
+import HideImageIcon from "@mui/icons-material/HideImage";
+import MicrowaveIcon from "@mui/icons-material/Microwave";
+import MicrowaveOutlinedIcon from "@mui/icons-material/MicrowaveOutlined";
+import WifiOffOutlinedIcon from "@mui/icons-material/WifiOffOutlined";
+import WifiOutlinedIcon from "@mui/icons-material/WifiOutlined";
 import {
     Box,
+    Button,
     Checkbox,
     FormControl,
     FormControlLabel,
@@ -10,30 +22,18 @@ import {
     MenuItem,
     Select,
     Typography,
-    Button,
 } from "@mui/material";
-import * as React from "react";
 import { styled } from "@mui/system";
+import * as React from "react";
 import { useState } from "react";
 import DefaultAdminLayout from "./DefaultAdminLayout";
-import CoffeeOutlinedIcon from "@mui/icons-material/CoffeeOutlined";
-import CoffeeIcon from "@mui/icons-material/Coffee";
-import DinnerDiningOutlinedIcon from "@mui/icons-material/DinnerDiningOutlined";
-import MicrowaveOutlinedIcon from "@mui/icons-material/MicrowaveOutlined";
-import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
-import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
-import MicrowaveIcon from "@mui/icons-material/Microwave";
-import BathtubIcon from "@mui/icons-material/Bathtub";
-import WifiOutlinedIcon from "@mui/icons-material/WifiOutlined";
-import WifiOffOutlinedIcon from "@mui/icons-material/WifiOffOutlined";
-import HideImageIcon from "@mui/icons-material/HideImage";
 // import parse from "html-react-parser";
 import axios from "axios";
 
-import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
-import { HotelState } from "../../components/MyContext/MyContext";
+import { useQuill } from "react-quilljs";
 import { useNavigate } from "react-router-dom";
+import { HotelState } from "../../components/MyContext/MyContext";
 
 const StyledTextField = styled("input")`
     height: 45px;
@@ -213,8 +213,7 @@ function CreateRoom() {
                             </Grid>
                             <Grid item lg={3}>
                                 <div style={{ display: "flex", flexDirection: "column" }}>
-                                    <span>Loại phòng</span>
-                                    <Select
+                                    <span>Loại phòng</span>                                    <Select
                                         sx={{ height: "45px" }}
                                         id="roomType"
                                         value={roomType}
@@ -223,6 +222,7 @@ function CreateRoom() {
                                         <MenuItem value={"single"}>Phòng đơn</MenuItem>
                                         <MenuItem value={"double"}>Phòng đôi</MenuItem>
                                         <MenuItem value={"vip"}>Phòng vip</MenuItem>
+                                        <MenuItem value={"community"}>Phòng cộng đồng</MenuItem>
                                     </Select>
                                 </div>
                             </Grid>

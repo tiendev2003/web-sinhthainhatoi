@@ -9,7 +9,7 @@ const cuisineSchema = new mongoose.Schema({
     description: String,
     summary: String,
     tags: [String],
-    orderCount: Number,
+    orderCount: { type: Number, default: 0 },
 });
 const cuisineModel = new mongoose.model("cuisine", cuisineSchema);
 module.exports = cuisineModel;

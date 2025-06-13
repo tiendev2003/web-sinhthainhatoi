@@ -1,26 +1,26 @@
-import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CollectionsIcon from "@mui/icons-material/Collections";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import MessageIcon from "@mui/icons-material/Message";
+import RoomServiceIcon from "@mui/icons-material/RoomService";
+import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import MuiDrawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
+import { styled, useTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import EventNoteIcon from "@mui/icons-material/EventNote";
-import RoomServiceIcon from "@mui/icons-material/RoomService";
-import MessageIcon from "@mui/icons-material/Message";
-import CollectionsIcon from "@mui/icons-material/Collections";
 
 const drawerWidth = 240;
 
@@ -168,8 +168,34 @@ export default function Sidenav() {
                                         height: "24px",
                                     }}
                                 />
+                            </ListItemIcon>                            <StyledListItemText primary="Quản lý ẩm thực" sx={{ opacity: open ? 1 : 0 }} />
+                        </ListItemButton>
+                        <ListItemButton
+                            sx={{
+                                minHeight: 48,
+                                justifyContent: open ? "initial" : "center",
+                                px: 2.5,
+                            }}
+                            onClick={() => {
+                                navigate("/admin/table");window.scrollTo(0, 0);
+                            }}
+                        >
+                            <ListItemIcon
+                                sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : "auto",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <TableRestaurantIcon
+                                    sx={{
+                                        fill: "black",
+                                        width: "26px",
+                                        height: "24px",
+                                    }}
+                                />
                             </ListItemIcon>
-                            <StyledListItemText primary="Quản lý ẩm thực" sx={{ opacity: open ? 1 : 0 }} />
+                            <StyledListItemText primary="Quản lý bàn ăn" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                         <ListItemButton
                             sx={{

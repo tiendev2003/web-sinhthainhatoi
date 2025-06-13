@@ -2,6 +2,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import { AppBar, Badge, Button, IconButton, styled, Toolbar } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -197,6 +198,15 @@ getUnreadNotifications();
                         </IconButton>
                         <Link to={"/order"}>
                             <ShoppingCartIcon
+                                sx={{
+                                    fill: "black",
+                                    width: "26px",
+                                    height: "24px",
+                                    margin: "6px",
+                                }}
+                            />                        </Link>
+                        <Link to={"/my-table-bookings"}>
+                            <TableRestaurantIcon
                                 sx={{
                                     fill: "black",
                                     width: "26px",

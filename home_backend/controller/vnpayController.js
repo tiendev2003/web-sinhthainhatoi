@@ -2,6 +2,8 @@ const moment = require("moment");
 const paymentModel = require("../models/paymentModel");
 const orderModel = require("../models/orderModel");
 const bookingModel = require("../models/bookingModel");
+const tableOrderModel = require("../models/tableOrderModel");
+const { getIO } = require("../utils/socket");
 function sortObject(obj) {
     let sorted = {};
     let str = [];
@@ -125,8 +127,7 @@ const paymentIPN = async (req, res, next) => {
     if (secureHash === signed) {
         //kiểm tra checksum
         if (checkOrderId) {
-            if (checkAmount) {
-                if (paymentStatus == "0") {
+            if (checkAmount) {                if (paymentStatus == "0") {
                     //kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
                     if (rspCode == "00") {
                         //thanh cong
@@ -146,6 +147,18 @@ const paymentIPN = async (req, res, next) => {
                                 { new: true }
                             );
                             console.log(booking);
+                        }                        if (payment.targetType === "tableOrder") {
+                            const tableOrder = await tableOrderModel.findByIdAndUpdate(
+                                payment.targetObjectId,
+                                { paymentStatus: "paid" },
+                                { new: true }
+                            );
+                            console.log("Table order payment updated:", tableOrder);
+                            
+                            // Emit socket event để cập nhật realtime
+                            const io = getIO();
+                            io.emit("paymentSuccess");
+                            io.to(tableOrder.userId.toString()).emit("paymentSuccess");
                         }
                         // Ở đây cập nhật trạng thái giao dịch thanh toán thành công vào CSDL của bạn
                         res.status(200).json({ RspCode: "00", Message: "Success" });

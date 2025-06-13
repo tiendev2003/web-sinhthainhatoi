@@ -1,13 +1,14 @@
-import DefaultAdminLayout from "./DefaultAdminLayout";
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { styled } from "@mui/system";
-import { Button, Box, Grid, Typography, Select, MenuItem, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import HideImageIcon from "@mui/icons-material/HideImage";
-import { useEffect, useRef, useState } from "react";
+import { Box, Button, Grid, IconButton, MenuItem, Select, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import axios from "axios";
+import "quill/dist/quill.snow.css";
+import { useEffect, useRef, useState } from "react";
+import { useQuill } from "react-quilljs";
+import { useNavigate, useParams } from "react-router-dom";
 import { HotelState } from "../../components/MyContext/MyContext";
+import DefaultAdminLayout from "./DefaultAdminLayout";
 
 const StyledTextField = styled("input")`
     height: 45px;
@@ -82,10 +83,9 @@ function AdminCuisineEdit() {
     const [tags, setTags] = useState("");
     const handleChangeTags = (event) => {
         setTags(event.target.value);
-    };
-
-    const [selectedImages, setSelectedImages] = useState([]);
+    };    const [selectedImages, setSelectedImages] = useState([]);
     const [file, setFile] = useState([]);
+    const [imagesToDelete, setImagesToDelete] = useState([]);
 
     const onSelectFile = (event) => {
         setFile(event.target.files);
@@ -97,6 +97,15 @@ function AdminCuisineEdit() {
         });
 
         setSelectedImages((previousImages) => previousImages.concat(imagesArray));
+    };
+
+    const deleteOldImage = (imageUrl) => {
+        // Add to delete list
+        setImagesToDelete((prev) => [...prev, imageUrl]);
+        // Remove from display
+        setSelectedImages((prev) => prev.filter((img) => img !== imageUrl));
+        // Update oldImages to exclude this image
+        setOldImages((prev) => prev.filter((img) => img !== imageUrl));
     };
     const [summary, setSummary] = useState("");
     const handleChangeSummary = (e) => {
@@ -122,9 +131,7 @@ function AdminCuisineEdit() {
                 setValue(quillRef.current.firstChild.innerHTML);
             });
         }
-    }, [quill, value]);
-
-    const handleSubmit = async (e) => {
+    }, [quill, value]);    const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append("type", cuisineType);
@@ -133,6 +140,23 @@ function AdminCuisineEdit() {
         formData.append("listedPrice", listedPrice);
         formData.append("promotionalPrice", promotionalPrice);
         formData.append("summary", summary);
+          // Process tags - split by comma and trim
+        let newTags = [];
+        if (tags.includes(",")) {
+            newTags = tags.split(",");
+            for (let i = 0; i < newTags.length; i++) {
+                formData.append("tags", newTags[i].trim());
+            }
+        } else if (tags.trim()) {
+            formData.append("tags", tags.trim());
+        }
+        
+        // Add images to delete
+        for (let i = 0; i < imagesToDelete.length; i++) {
+            formData.append("imagesToDelete", imagesToDelete[i]);
+        }
+        
+        // Add remaining old images
         for (let i = 0; i < oldImages.length; i++) {
             formData.append("oldImage", oldImages[i]);
         }
@@ -257,9 +281,9 @@ function AdminCuisineEdit() {
                                         alignItems: "center",
                                         overflow: "auto",
                                     }}
-                                >
-                                    {selectedImages &&
+                                >                                    {selectedImages &&
                                         selectedImages.map((image, index) => {
+                                            const isOldImage = !image.includes("localhost") && !image.startsWith("blob:");
                                             return (
                                                 <div
                                                     key={image}
@@ -267,9 +291,26 @@ function AdminCuisineEdit() {
                                                         display: "flex",
                                                         flexDirection: "column",
                                                         alignItems: "center",
+                                                        position: "relative",
+                                                        marginBottom: "20px"
                                                     }}
                                                 >
                                                     <p>{index + 1}</p>
+                                                    {isOldImage && (
+                                                        <IconButton
+                                                            color="error"
+                                                            onClick={() => deleteOldImage(image)}
+                                                            style={{
+                                                                position: "absolute",
+                                                                top: "25px",
+                                                                right: "10%",
+                                                                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                                                zIndex: 1
+                                                            }}
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    )}
                                                     <img
                                                         src={
                                                             image.includes("localhost")

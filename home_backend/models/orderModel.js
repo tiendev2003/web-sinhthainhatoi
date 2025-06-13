@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema(
         cuisineName: String,
         promotionalPrice: Number,
         roomNo: String,
-        quantity: Number,
+        quantity: { type: Number, default: 1 },
         totalPrice: Number,
         cuisineId: { type: mongoose.Schema.Types.ObjectId, ref: "cuisine" },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },

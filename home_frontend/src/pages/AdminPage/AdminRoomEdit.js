@@ -1,5 +1,18 @@
+import BathtubIcon from "@mui/icons-material/Bathtub";
+import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
+import CoffeeIcon from "@mui/icons-material/Coffee";
+import CoffeeOutlinedIcon from "@mui/icons-material/CoffeeOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
+import DinnerDiningOutlinedIcon from "@mui/icons-material/DinnerDiningOutlined";
+import HideImageIcon from "@mui/icons-material/HideImage";
+import MicrowaveIcon from "@mui/icons-material/Microwave";
+import MicrowaveOutlinedIcon from "@mui/icons-material/MicrowaveOutlined";
+import WifiOffOutlinedIcon from "@mui/icons-material/WifiOffOutlined";
+import WifiOutlinedIcon from "@mui/icons-material/WifiOutlined";
 import {
     Box,
+    Button,
     Checkbox,
     FormControl,
     FormControlLabel,
@@ -10,28 +23,16 @@ import {
     MenuItem,
     Select,
     Typography,
-    Button,
 } from "@mui/material";
-import * as React from "react";
 import { styled } from "@mui/system";
-import { useState } from "react";
-import DefaultAdminLayout from "./DefaultAdminLayout";
-import CoffeeOutlinedIcon from "@mui/icons-material/CoffeeOutlined";
-import CoffeeIcon from "@mui/icons-material/Coffee";
-import DinnerDiningOutlinedIcon from "@mui/icons-material/DinnerDiningOutlined";
-import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
-import MicrowaveOutlinedIcon from "@mui/icons-material/MicrowaveOutlined";
-import MicrowaveIcon from "@mui/icons-material/Microwave";
-import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
-import BathtubIcon from "@mui/icons-material/Bathtub";
-import WifiOffOutlinedIcon from "@mui/icons-material/WifiOffOutlined";
-import WifiOutlinedIcon from "@mui/icons-material/WifiOutlined";
-import HideImageIcon from "@mui/icons-material/HideImage";
 import axios from "axios";
+import * as React from "react";
+import { useState } from "react";
 import { HotelState } from "../../components/MyContext/MyContext";
+import DefaultAdminLayout from "./DefaultAdminLayout";
 
-import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
+import { useQuill } from "react-quilljs";
 import { useNavigate, useParams } from "react-router-dom";
 
 const StyledTextField = styled("input")`
@@ -71,8 +72,8 @@ function AdminRoomEdit() {
             setOldImages(detail.data.images);
         }
         getDetail();
-    }, []);
-    const [oldImages, setOldImages] = useState();
+    }, []);    const [oldImages, setOldImages] = useState();
+    const [imagesToDelete, setImagesToDelete] = useState([]);
     const [services, setServices] = useState([]);
     const [roomType, setRoomType] = useState("");
     const handleChangeRoomType = (event) => {
@@ -114,9 +115,7 @@ function AdminRoomEdit() {
         setPrice(event.target.value);
     };
 
-    const [selectedImages, setSelectedImages] = useState([]);
-
-    const onSelectFile = (event) => {
+    const [selectedImages, setSelectedImages] = useState([]);    const onSelectFile = (event) => {
         setFile(event.target.files);
         const selectedFiles = event.target.files;
         const selectedFilesArray = Array.from(selectedFiles);
@@ -126,6 +125,15 @@ function AdminRoomEdit() {
         });
 
         setSelectedImages((previousImages) => previousImages.concat(imagesArray));
+    };
+
+    const deleteOldImage = (imageUrl) => {
+        // Add to delete list
+        setImagesToDelete((prev) => [...prev, imageUrl]);
+        // Remove from display
+        setSelectedImages((prev) => prev.filter((img) => img !== imageUrl));
+        // Update oldImages to exclude this image
+        setOldImages((prev) => prev.filter((img) => img !== imageUrl));
     };
     const fileRef = React.useRef(null);
     const clearAllImages = () => {
@@ -149,9 +157,7 @@ function AdminRoomEdit() {
         }
     }, [quill]);
 
-    const [file, setFile] = useState([]);
-
-    const onSubmit = async (e) => {
+    const [file, setFile] = useState([]);    const onSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
         let roomStatus = [];
@@ -174,6 +180,12 @@ function AdminRoomEdit() {
         formData.append("area", area);
         formData.append("price", price);
 
+        // Add images to delete
+        for (let i = 0; i < imagesToDelete.length; i++) {
+            formData.append("imagesToDelete", imagesToDelete[i]);
+        }
+
+        // Add remaining old images
         for (let i = 0; i < oldImages.length; i++) {
             formData.append("oldImage", oldImages[i]);
         }
@@ -229,8 +241,7 @@ function AdminRoomEdit() {
                             </Grid>
                             <Grid item lg={3}>
                                 <div style={{ display: "flex", flexDirection: "column" }}>
-                                    <span>Loại phòng</span>
-                                    <Select
+                                    <span>Loại phòng</span>                                    <Select
                                         sx={{ height: "45px" }}
                                         id="roomType"
                                         value={roomType}
@@ -239,6 +250,7 @@ function AdminRoomEdit() {
                                         <MenuItem value={"single"}>Phòng đơn</MenuItem>
                                         <MenuItem value={"double"}>Phòng đôi</MenuItem>
                                         <MenuItem value={"vip"}>Phòng vip</MenuItem>
+                                        <MenuItem value={"community"}>Phòng cộng đồng</MenuItem>
                                     </Select>
                                 </div>
                             </Grid>
@@ -391,9 +403,9 @@ function AdminRoomEdit() {
                                         alignItems: "center",
                                         overflow: "auto",
                                     }}
-                                >
-                                    {selectedImages &&
+                                >                                    {selectedImages &&
                                         selectedImages.map((image, index) => {
+                                            const isOldImage = !image.includes("localhost") && !image.startsWith("blob:");
                                             return (
                                                 <div
                                                     key={image}
@@ -401,9 +413,26 @@ function AdminRoomEdit() {
                                                         display: "flex",
                                                         flexDirection: "column",
                                                         alignItems: "center",
+                                                        position: "relative",
+                                                        marginBottom: "20px"
                                                     }}
                                                 >
                                                     <p>{index + 1}</p>
+                                                    {isOldImage && (
+                                                        <IconButton
+                                                            color="error"
+                                                            onClick={() => deleteOldImage(image)}
+                                                            style={{
+                                                                position: "absolute",
+                                                                top: "25px",
+                                                                right: "10%",
+                                                                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                                                zIndex: 1
+                                                            }}
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    )}
                                                     <img
                                                         src={
                                                             image.includes("localhost")

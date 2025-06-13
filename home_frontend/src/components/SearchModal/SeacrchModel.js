@@ -1,18 +1,18 @@
-import PropTypes from "prop-types";
+import BathtubIcon from "@mui/icons-material/Bathtub";
 import CloseIcon from "@mui/icons-material/Close";
-import Dialog from "@mui/material/Dialog";
-import { styled } from "@mui/system";
-import { AppBar, Card, CardContent, CardMedia, Grid, IconButton, Toolbar, Typography } from "@mui/material";
-import { useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import ContainerComponent from "../ContainerComponent/ContainerComponent";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import CoffeeIcon from "@mui/icons-material/Coffee";
 import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
 import MicrowaveIcon from "@mui/icons-material/Microwave";
-import BathtubIcon from "@mui/icons-material/Bathtub";
+import SearchIcon from "@mui/icons-material/Search";
 import WifiOutlinedIcon from "@mui/icons-material/WifiOutlined";
+import { AppBar, Card, CardContent, CardMedia, Grid, IconButton, Toolbar, Typography } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import { styled } from "@mui/system";
+import axios from "axios";
+import PropTypes from "prop-types";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ContainerComponent from "../ContainerComponent/ContainerComponent";
 
 const StyledTextField = styled("input")`
     height: 45px;
@@ -83,10 +83,9 @@ function SimpleDialog(props) {
         setResult(response.data);
         setIsSearched(true);
     };
-    const navigate = useNavigate();
-    const ResultItemRoom =
+    const navigate = useNavigate();    const ResultItemRoom =
         result &&
-        (result[0].roomType === "single" || result[0].roomType === "double" || result[0].roomType === "vip") &&
+        (result[0].roomType === "single" || result[0].roomType === "double" || result[0].roomType === "vip" || result[0].roomType === "community") &&
         result.map((item, index) => {
             return (
                 <Grid key={index} item lg={3}>
